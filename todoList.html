@@ -6,8 +6,6 @@
   </head>
   <body>
     <h1>Todo List</h1>
-    <!-- this is a test -->
-
     <div>
       <!-- <button onclick="handlers.displayTodos()">Display Todos</button> -->
       <button onclick="handlers.toggleAll()">Toggle All</button>
@@ -24,11 +22,11 @@
       <input id="changeTodoTextInput"  type="text" size="35" placeholder="what should the todo be changed to?">
     </div>
 
-    <div>
+    <!-- <div>
       <button onclick="handlers.deleteTodo()">Delete Todo</button>
       <input id="startPositionInput" type="number" size="50" placeholder="Start deleting at?">
       <input id="numberToDeleteInput" type="number" size="35" placeholder="How many Todos should we delete?">
-    </div>
+    </div> -->
 
     <div>
       <button onclick="handlers.completeTodo()">Complete Todo</button>
@@ -55,9 +53,8 @@
           this.todos[position].todoText = newTodoText;
           view.displayTodos();
         },
-        deleteTodos:function(startPosition, numberToDelete){
-          var gettingDeleted = this.todos[startPosition].todoText;
-          this.todos.splice(startPosition,numberToDelete);
+        deleteTodos:function(startPosition){
+          this.todos.splice(startPosition,1);
           view.displayTodos();
         },
         toggleCompleted:function(todoPosition){
@@ -105,19 +102,6 @@
             changeTodoTextInput.value = '';
           }
         },
-        deleteTodo: function(){
-          try{
-            var startPositionInput = document.getElementById("startPositionInput");
-            var numberToDeleteInput = document.getElementById("numberToDeleteInput");
-            todoList.deleteTodos(startPositionInput.valueAsNumber,numberToDeleteInput.valueAsNumber);
-            startPositionInput.value = '';
-            numberToDeleteInput.value = '';
-          }
-          catch{
-            startPositionInput.value = '';
-            numberToDeleteInput.value = '';
-          }
-        },
         completeTodo: function(){
           try{
             var CompleteTodoPositionInput = document.getElementById("CompleteTodoPositionInput");
@@ -137,7 +121,7 @@
         displayTodos: function(){
           var todosUl = document.querySelector('ul');
           todosUl.innerHTML = '';
-          todoList.todos.forEach(element => {
+          todoList.todos.forEach((element, index) => {
             var todoLi = document.createElement('li');
 
             var completedText;
@@ -150,17 +134,40 @@
             }
             listItemString = (completedText + ' ' + element.todoText);
 
+            todoLi.id = index
             todoLi.textContent = listItemString;
+            todoLi.appendChild(this.createDeleteButton());
             todosUl.appendChild(todoLi);
+          });
+        },
+        createDeleteButton: function(){
+          var deleteButton = document.createElement('button');
+          deleteButton.textContent = 'delete';
+          deleteButton.className = 'deleteButton';
+          return deleteButton;
+        },
+        setUpEventListeners: function(){
+          //event listener to add todo with enter click
+          var addTodoTextInput = document.getElementById('addTodoTextInput');
+          addTodoTextInput.addEventListener('keyup', function(event){
+            if(event.keyCode ===13){
+              document.getElementById('addTodoButton').click();
+              addTodoTextInput.value = '';
+            }
+          });
+
+          //event listener to delete todo on delete button press
+          var todosUl = document.querySelector('ul');
+          todosUl.addEventListener('click', function(event){
+            var elementClicked = event.target;
+            if(elementClicked.className === 'deleteButton'){
+              todoList.deleteTodos(parseInt(elementClicked.parentNode.id))
+            }
           });
         }
       }
-      var addTodoTextInput = document.getElementById('addTodoTextInput');
-      addTodoTextInput.addEventListener('keyup', function(event){
-        if(event.keyCode ===13){
-          document.getElementById('addTodoButton').click();
-        }
-      });
+
+      view.setUpEventListeners();
     </script>
   </body>
 </html>
