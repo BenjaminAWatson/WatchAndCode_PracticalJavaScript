@@ -28,10 +28,10 @@
       <input id="numberToDeleteInput" type="number" size="35" placeholder="How many Todos should we delete?">
     </div> -->
 
-    <div>
+    <!-- <div>
       <button onclick="handlers.completeTodo()">Complete Todo</button>
       <input id="CompleteTodoPositionInput" type="number" placeholder="Which Todo?">
-    </div>
+    </div> -->
 
     <ul>
 
@@ -58,7 +58,13 @@
           view.displayTodos();
         },
         toggleCompleted:function(todoPosition){
-          this.todos[todoPosition].completed = true;
+          if(this.todos.completed === true){
+            this.todos[todoPosition].completed = false;
+          }
+          else{
+            this.todos[todoPosition].completed = true;
+          }
+          
           view.displayTodos();
         },
         toggleAll:function(){
@@ -102,16 +108,6 @@
             changeTodoTextInput.value = '';
           }
         },
-        completeTodo: function(){
-          try{
-            var CompleteTodoPositionInput = document.getElementById("CompleteTodoPositionInput");
-            todoList.toggleCompleted(CompleteTodoPositionInput.valueAsNumber);
-            CompleteTodoPositionInput.value = '';
-          }
-          catch{
-            CompleteTodoPositionInput.value = '';
-          }
-        },
         toggleAll: function(){
           todoList.toggleAll();
         }
@@ -136,15 +132,10 @@
 
             todoLi.id = index
             todoLi.textContent = listItemString;
-            todoLi.appendChild(this.createDeleteButton());
+            todoLi.appendChild(createButtons.ChangeStatusButton());
+            todoLi.appendChild(createButtons.deleteButton());
             todosUl.appendChild(todoLi);
           });
-        },
-        createDeleteButton: function(){
-          var deleteButton = document.createElement('button');
-          deleteButton.textContent = 'delete';
-          deleteButton.className = 'deleteButton';
-          return deleteButton;
         },
         setUpEventListeners: function(){
           //event listener to add todo with enter click
@@ -156,14 +147,32 @@
             }
           });
 
-          //event listener to delete todo on delete button press
+          //event listener to delete or complete todo on delete button press
           var todosUl = document.querySelector('ul');
           todosUl.addEventListener('click', function(event){
             var elementClicked = event.target;
             if(elementClicked.className === 'deleteButton'){
               todoList.deleteTodos(parseInt(elementClicked.parentNode.id))
             }
+            if(elementClicked.className === 'changeStatusButton'){
+              todoList.toggleCompleted(elementClicked.parentNode.id);
+            }
           });
+        }
+      }
+
+      var createButtons ={
+        deleteButton: function(){
+          var deleteButton = document.createElement('button');
+          deleteButton.textContent = 'delete';
+          deleteButton.className = 'deleteButton';
+          return deleteButton;
+        },
+        ChangeStatusButton: function(completion){
+          var completeTodoButton = document.createElement('button');
+          completeTodoButton.textContent = 'changeStatus';
+          completeTodoButton.className = 'changeStatusButton'
+          return completeTodoButton;
         }
       }
 
