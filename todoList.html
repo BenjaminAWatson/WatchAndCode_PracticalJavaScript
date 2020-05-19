@@ -26,7 +26,7 @@
 
       <div id="listDiv" style="display:none; background-color: lightblue;">
         <div>
-          <ul>
+          <ul id="ulOfTodos">
 
           </ul>
         </div>
@@ -40,6 +40,7 @@
     </div>
     <script>   
     var indexInt;
+    var lastClickedElement;
       var todoList = {
         
         todos:[],
@@ -163,6 +164,7 @@
 
           //click event listeners inside of ul
           var todosUl = document.querySelector('ul');
+          
           todosUl.addEventListener('click', function(event){
             var elementClicked = event.target;
             if(elementClicked.className === 'deleteButton'){
@@ -177,18 +179,26 @@
               if(hiddenDiv.style.display === 'block' && indexInt === parseInt(elementClicked.parentNode.id)){
                 hiddenDiv.style.display = 'none';
                 indexInt = undefined;
-                console.log(indexInt);
+                elementClicked.style.backgroundColor = 'white';
               }
               //if hidden div is already displayed but diffrent edit button is pressed
               else if(hiddenDiv.style.display === 'block'){
+                //lastClickedElement.style.backgroundColor = 'white';
+                var todosUlelement = document.getElementById('ulOfTodos');
+                var lis = todosUl.getElementsByTagName('li');
+                for(var i = 0; i<lis.length; i++){
+                  if(lis[i] === indexInt){
+                    console.log(lis[i]);
+                  }
+                }
                 indexInt = parseInt(elementClicked.parentNode.id);
-                console.log(indexInt);
               }
               //if the hidden div is not displayed when the edit button is pressed
               else{
                 hiddenDiv.style.display = 'block';
                 indexInt = parseInt(elementClicked.parentNode.id);
                 console.log(indexInt);
+                elementClicked.style.backgroundColor = '#FDFF47';
                 }
             }
           });
