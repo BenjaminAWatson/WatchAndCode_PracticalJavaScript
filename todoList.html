@@ -24,7 +24,7 @@
         <input id="changeTodoTextInput"  type="text" size="35" placeholder="what should the todo be changed to?">
       </div> -->
 
-      <div>
+      <div id="listDiv" style="display:none; background-color: lightblue;">
         <div>
           <ul>
 
@@ -39,6 +39,7 @@
 
     </div>
     <script>   
+    var indexInt;
       var todoList = {
         
         todos:[],
@@ -47,6 +48,10 @@
             todoText: todo,
             completed: false
           });
+          var listDiv = document.getElementById('listDiv');
+          if(listDiv.style.display === 'none'){
+            listDiv.style.display = 'inline-block'
+          }
           view.displayTodos();
         },
         changeTodos:function(position,newTodoText){
@@ -115,10 +120,6 @@
       }
 
       var view ={
-        index: Number('0'),
-        captureIndex:function(index){
-          this.index = index;
-        },
         displayTodos: function(){
           var todosUl = document.querySelector('ul');
           todosUl.innerHTML = '';
@@ -135,8 +136,7 @@
             }
             listItemString = (completedText + ' ' + element.todoText);
 
-            todoLi.id = index
-            this.captureIndex(index);
+            todoLi.id = index;
             todoLi.textContent = listItemString;
             todoLi.appendChild(createButtons.EditTodoTextButton());
             todoLi.appendChild(createButtons.changeStatusButton());
@@ -173,12 +173,23 @@
             }
             if(elementClicked.className === 'editTodoButton'){
               var hiddenDiv = document.getElementById('submitEditTodoDiv');
-              if(hiddenDiv.style.display === 'block'){
+              //if hidden div is already displayed and the same edit button is pressed
+              if(hiddenDiv.style.display === 'block' && indexInt === parseInt(elementClicked.parentNode.id)){
                 hiddenDiv.style.display = 'none';
+                indexInt = undefined;
+                console.log(indexInt);
               }
+              //if hidden div is already displayed but diffrent edit button is pressed
+              else if(hiddenDiv.style.display === 'block'){
+                indexInt = parseInt(elementClicked.parentNode.id);
+                console.log(indexInt);
+              }
+              //if the hidden div is not displayed when the edit button is pressed
               else{
                 hiddenDiv.style.display = 'block';
-              }
+                indexInt = parseInt(elementClicked.parentNode.id);
+                console.log(indexInt);
+                }
             }
           });
         }
