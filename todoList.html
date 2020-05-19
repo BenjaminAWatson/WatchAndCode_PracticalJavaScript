@@ -5,38 +5,39 @@
     <title>Practical JavaScript</title>
   </head>
   <body>
-    <h1>Todo List</h1>
     <div>
-      <!-- <button onclick="handlers.displayTodos()">Display Todos</button> -->
-      <button onclick="handlers.toggleAll()">Toggle All</button>
+
+      
+      <h1>Todo List</h1>
+      <div>
+        <button onclick="handlers.toggleAll()">Toggle All</button>
+      </div>
+
+      <div>
+        <button id="addTodoButton" onclick="handlers.addTodo()">Add Todo</button>
+        <input id="addTodoTextInput" type="text">
+      </div>
+
+      <!-- <div>
+        <button onclick="handlers.changeTodo()">Change Todo</button>
+        <input id="position" type="number" placeholder="which todo position">
+        <input id="changeTodoTextInput"  type="text" size="35" placeholder="what should the todo be changed to?">
+      </div> -->
+
+      <div>
+        <div>
+          <ul>
+
+          </ul>
+        </div>
+        <div id="submitEditTodoDiv" style="display:none;">
+          <button id="submitEditTodoButton">Submit Edit</button>
+          <input id="submitEditTodoTextInput" type="text" size="35" placeholder="Type Edit Here">
+        </div>
+      </div>
+      
+
     </div>
-
-    <div>
-      <button id="addTodoButton" onclick="handlers.addTodo()">Add Todo</button>
-      <input id="addTodoTextInput" type="text">
-    </div>
-
-    <div>
-      <button onclick="handlers.changeTodo()">Change Todo</button>
-      <input id="position" type="number" placeholder="which todo position">
-      <input id="changeTodoTextInput"  type="text" size="35" placeholder="what should the todo be changed to?">
-    </div>
-
-    <!-- <div>
-      <button onclick="handlers.deleteTodo()">Delete Todo</button>
-      <input id="startPositionInput" type="number" size="50" placeholder="Start deleting at?">
-      <input id="numberToDeleteInput" type="number" size="35" placeholder="How many Todos should we delete?">
-    </div> -->
-
-    <!-- <div>
-      <button onclick="handlers.completeTodo()">Complete Todo</button>
-      <input id="CompleteTodoPositionInput" type="number" placeholder="Which Todo?">
-    </div> -->
-
-    <ul>
-
-    </ul>
-
     <script>   
       var todoList = {
         
@@ -58,7 +59,7 @@
           view.displayTodos();
         },
         toggleCompleted:function(todoPosition){
-          if(this.todos.completed === true){
+          if(this.todos[todoPosition].completed === true){
             this.todos[todoPosition].completed = false;
           }
           else{
@@ -114,6 +115,10 @@
       }
 
       var view ={
+        index: Number('0'),
+        captureIndex:function(index){
+          this.index = index;
+        },
         displayTodos: function(){
           var todosUl = document.querySelector('ul');
           todosUl.innerHTML = '';
@@ -131,14 +136,16 @@
             listItemString = (completedText + ' ' + element.todoText);
 
             todoLi.id = index
+            this.captureIndex(index);
             todoLi.textContent = listItemString;
-            todoLi.appendChild(createButtons.ChangeStatusButton());
+            todoLi.appendChild(createButtons.EditTodoTextButton());
+            todoLi.appendChild(createButtons.changeStatusButton());
             todoLi.appendChild(createButtons.deleteButton());
             todosUl.appendChild(todoLi);
           });
         },
         setUpEventListeners: function(){
-          //event listener to add todo with enter click
+          //keyup evet listeners 
           var addTodoTextInput = document.getElementById('addTodoTextInput');
           addTodoTextInput.addEventListener('keyup', function(event){
             if(event.keyCode ===13){
@@ -147,7 +154,14 @@
             }
           });
 
-          //event listener to delete or complete todo on delete button press
+          //click event listeners          
+          var submitEditTodoButton = document.getElementById('submitEditTodoButton');
+          submitEditTodoButton.addEventListener('click', function(){
+            var submitEditTextBox = document.getElementById('submitEditTodoTextInput');
+            var SubmitEditTextBoxValue = submitEditTextBox.value;
+          });
+
+          //click event listeners inside of ul
           var todosUl = document.querySelector('ul');
           todosUl.addEventListener('click', function(event){
             var elementClicked = event.target;
@@ -156,6 +170,15 @@
             }
             if(elementClicked.className === 'changeStatusButton'){
               todoList.toggleCompleted(elementClicked.parentNode.id);
+            }
+            if(elementClicked.className === 'editTodoButton'){
+              var hiddenDiv = document.getElementById('submitEditTodoDiv');
+              if(hiddenDiv.style.display === 'block'){
+                hiddenDiv.style.display = 'none';
+              }
+              else{
+                hiddenDiv.style.display = 'block';
+              }
             }
           });
         }
@@ -168,12 +191,19 @@
           deleteButton.className = 'deleteButton';
           return deleteButton;
         },
-        ChangeStatusButton: function(completion){
+        changeStatusButton: function(completion){
           var completeTodoButton = document.createElement('button');
           completeTodoButton.textContent = 'changeStatus';
           completeTodoButton.className = 'changeStatusButton'
           return completeTodoButton;
+        },
+        EditTodoTextButton: function(){
+          var changeTodoButton = document.createElement('button');
+          changeTodoButton.textContent = 'editTodo';
+          changeTodoButton.className = 'editTodoButton';
+          return changeTodoButton;
         }
+
       }
 
       view.setUpEventListeners();
