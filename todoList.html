@@ -3,6 +3,7 @@
 <html>
   <head>
     <title>Practical JavaScript</title>
+    <link rel="stylesheet" type="text/css" href="todoListCss.css">
   </head>
   <body>
     <div>
@@ -26,7 +27,7 @@
 
       <div id="listDiv" style="display:none; background-color: lightblue;">
         <div>
-          <ul id="ulOfTodos">
+          <ul id="ulOfTodos" >
 
           </ul>
         </div>
@@ -45,6 +46,7 @@
         
         todos:[],
         addTodos: function(todo){
+          var sizeOfLongestTodo;
           this.todos.push({
             todoText: todo,
             completed: false
@@ -122,11 +124,13 @@
 
       var view ={
         displayTodos: function(){
+          
           var todosUl = document.querySelector('ul');
           todosUl.innerHTML = '';
           todoList.todos.forEach((element, index) => {
             var todoLi = document.createElement('li');
-
+            var todoButtonDiv = document.createElement('div');
+            todoButtonDiv.className = 'todoButtonDiv';
             var completedText;
             var listItemString;
             if(element.completed == true){
@@ -139,15 +143,28 @@
 
             todoLi.id = index;
             todoLi.textContent = listItemString;
-            todoLi.appendChild(createButtons.EditTodoTextButton());
-            todoLi.appendChild(createButtons.changeStatusButton());
-            todoLi.appendChild(createButtons.deleteButton());
+
+            //to revert change todoButtonDiv back to todoLi
+            todoButtonDiv.appendChild(createButtons.EditTodoTextButton());
+            todoButtonDiv.appendChild(createButtons.changeStatusButton());
+            todoButtonDiv.appendChild(createButtons.deleteButton());
+            //todoLi.appendChild(createButtons.EditTodoTextButton());
+            //todoLi.appendChild(createButtons.changeStatusButton());
+            //todoLi.appendChild(createButtons.deleteButton());
+            todoLi.appendChild(todoButtonDiv);
             todosUl.appendChild(todoLi);
+
+                       
           });
         },
         setUpEventListeners: function(){
-          //keyup evet listeners 
+          //variables that will listen for events 
           var addTodoTextInput = document.getElementById('addTodoTextInput');
+          var submitEditTodoTextInput = document.getElementById('submitEditTodoTextInput');
+          var submitEditTodoButton = document.getElementById('submitEditTodoButton');
+          var todosUl = document.querySelector('ul');
+
+          //keyup evet listeners
           addTodoTextInput.addEventListener('keyup', function(event){
             if(event.keyCode ===13){
               document.getElementById('addTodoButton').click();
@@ -155,28 +172,37 @@
             }
           });
 
-          //click event listeners          
-          var submitEditTodoButton = document.getElementById('submitEditTodoButton');
+          submitEditTodoTextInput.addEventListener('keyup', function(event){
+            if(event.keyCode ===13){
+              submitEditTodoButton.click();
+            }
+          });
+
+          //click event listeners
           submitEditTodoButton.addEventListener('click', function(){
+            var hiddenDiv = document.getElementById('submitEditTodoDiv');
             var submitEditTextBox = document.getElementById('submitEditTodoTextInput');
             var SubmitEditTextBoxValue = submitEditTextBox.value;
+            todoList.changeTodos(indexInt,SubmitEditTextBoxValue);
+            submitEditTextBox.value = '';
+            submitEditTextBox.blur();
+            hiddenDiv.style.display = 'none';
+            indexInt = undefined;
           });
 
           //click event listeners inside of ul
-          var todosUl = document.querySelector('ul');
-          
           todosUl.addEventListener('click', function(event){
             var elementClicked = event.target;
             if(elementClicked.className === 'deleteButton'){
-              todoList.deleteTodos(parseInt(elementClicked.parentNode.id))
+              todoList.deleteTodos(parseInt(elementClicked.parentNode.parentNode.id))
             }
             if(elementClicked.className === 'changeStatusButton'){
-              todoList.toggleCompleted(elementClicked.parentNode.id);
+              todoList.toggleCompleted(elementClicked.parentNode.parentNode.id);
             }
             if(elementClicked.className === 'editTodoButton'){
               var hiddenDiv = document.getElementById('submitEditTodoDiv');
               //if hidden div is already displayed and the same edit button is pressed
-              if(hiddenDiv.style.display === 'block' && indexInt === parseInt(elementClicked.parentNode.id)){
+              if(hiddenDiv.style.display === 'block' && indexInt === parseInt(elementClicked.parentNode.parentNode.id)){
                 hiddenDiv.style.display = 'none';
                 indexInt = undefined;
                 elementClicked.style.backgroundColor = 'white';
@@ -188,19 +214,18 @@
                 var lis = todosUl.getElementsByTagName('li');
                 for(var i = 0; i<lis.length; i++){
                   if(parseInt(lis[i].id) === indexInt){
-                    console.log(lis[i]);
                     var editTodoButtonButtons = lis[i].getElementsByClassName('editTodoButton');
                     var editTodoButton = editTodoButtonButtons[0];
                     editTodoButton.style.backgroundColor = 'white';
                   }
                 }
-                indexInt = parseInt(elementClicked.parentNode.id);
+                indexInt = parseInt(elementClicked.parentNode.parentNode.id);
                 elementClicked.style.backgroundColor = '#FDFF47';
               }
               //if the hidden div is not displayed when the edit button is pressed
               else{
                 hiddenDiv.style.display = 'block';
-                indexInt = parseInt(elementClicked.parentNode.id);
+                indexInt = parseInt(elementClicked.parentNode.parentNode.id);
                 //console.log(indexInt);
                 elementClicked.style.backgroundColor = '#FDFF47';
                 }
