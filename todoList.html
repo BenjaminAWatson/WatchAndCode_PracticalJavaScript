@@ -187,17 +187,21 @@
                 var todosUlelement = document.getElementById('ulOfTodos');
                 var lis = todosUl.getElementsByTagName('li');
                 for(var i = 0; i<lis.length; i++){
-                  if(lis[i] === indexInt){
+                  if(parseInt(lis[i].id) === indexInt){
                     console.log(lis[i]);
+                    var editTodoButtonButtons = lis[i].getElementsByClassName('editTodoButton');
+                    var editTodoButton = editTodoButtonButtons[0];
+                    editTodoButton.style.backgroundColor = 'white';
                   }
                 }
                 indexInt = parseInt(elementClicked.parentNode.id);
+                elementClicked.style.backgroundColor = '#FDFF47';
               }
               //if the hidden div is not displayed when the edit button is pressed
               else{
                 hiddenDiv.style.display = 'block';
                 indexInt = parseInt(elementClicked.parentNode.id);
-                console.log(indexInt);
+                //console.log(indexInt);
                 elementClicked.style.backgroundColor = '#FDFF47';
                 }
             }
