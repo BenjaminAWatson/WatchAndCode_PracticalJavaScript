@@ -7,8 +7,6 @@
   </head>
   <body>
     <div>
-
-      
       <h1>Todo List</h1>
       <div>
         <button onclick="handlers.toggleAll()">Toggle All</button>
@@ -18,12 +16,6 @@
         <button id="addTodoButton" onclick="handlers.addTodo()">Add Todo</button>
         <input id="addTodoTextInput" type="text">
       </div>
-
-      <!-- <div>
-        <button onclick="handlers.changeTodo()">Change Todo</button>
-        <input id="position" type="number" placeholder="which todo position">
-        <input id="changeTodoTextInput"  type="text" size="35" placeholder="what should the todo be changed to?">
-      </div> -->
 
       <div id="listDiv" style="display:none; background-color: lightblue;">
         <div>
@@ -36,14 +28,11 @@
           <input id="submitEditTodoTextInput" type="text" size="35" placeholder="Type Edit Here">
         </div>
       </div>
-      
-
     </div>
     <script>   
     var indexInt;
     var lastClickedElement;
       var todoList = {
-        
         todos:[],
         addTodos: function(todo){
           var sizeOfLongestTodo;
@@ -73,7 +62,6 @@
           else{
             this.todos[todoPosition].completed = true;
           }
-          
           view.displayTodos();
         },
         toggleAll:function(){
@@ -124,7 +112,6 @@
 
       var view ={
         displayTodos: function(){
-          
           var todosUl = document.querySelector('ul');
           todosUl.innerHTML = '';
           todoList.todos.forEach((element, index) => {
@@ -140,21 +127,13 @@
               completedText = '( )';
             }
             listItemString = (completedText + ' ' + element.todoText);
-
             todoLi.id = index;
             todoLi.textContent = listItemString;
-
-            //to revert change todoButtonDiv back to todoLi
             todoButtonDiv.appendChild(createButtons.EditTodoTextButton());
             todoButtonDiv.appendChild(createButtons.changeStatusButton());
             todoButtonDiv.appendChild(createButtons.deleteButton());
-            //todoLi.appendChild(createButtons.EditTodoTextButton());
-            //todoLi.appendChild(createButtons.changeStatusButton());
-            //todoLi.appendChild(createButtons.deleteButton());
             todoLi.appendChild(todoButtonDiv);
             todosUl.appendChild(todoLi);
-
-                       
           });
         },
         setUpEventListeners: function(){
@@ -253,9 +232,7 @@
           changeTodoButton.className = 'editTodoButton';
           return changeTodoButton;
         }
-
       }
-
       view.setUpEventListeners();
     </script>
   </body>
