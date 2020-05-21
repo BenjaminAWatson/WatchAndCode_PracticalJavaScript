@@ -9,7 +9,7 @@
     <div>
       <h1>Todo List</h1>
       <div>
-        <button onclick="handlers.toggleAll()">Toggle All</button>
+        <button id="toggleAllButton" onclick="handlers.toggleAll()">Toggle All</button>
       </div>
 
       <div>
@@ -29,9 +29,18 @@
         </div>
       </div>
     </div>
-    <script>   
+    <script>
+    //global variables   
     var indexInt;
-    var lastClickedElement;
+    var hiddenDiv = document.getElementById('submitEditTodoDiv');
+
+    //variables that will listen for events 
+    var addTodoTextInput = document.getElementById('addTodoTextInput');
+    var submitEditTodoTextInput = document.getElementById('submitEditTodoTextInput');
+    var submitEditTodoButton = document.getElementById('submitEditTodoButton');
+    var todosUl = document.querySelector('ul');
+    var toggleAllButton = document.getElementById('toggleAllButton');
+
       var todoList = {
         todos:[],
         addTodos: function(todo){
@@ -43,6 +52,9 @@
           var listDiv = document.getElementById('listDiv');
           if(listDiv.style.display === 'none'){
             listDiv.style.display = 'inline-block'
+          }
+          if(hiddenDiv.style.display === 'block'){
+            hiddenDiv.style.display = 'none'
           }
           view.displayTodos();
         },
@@ -136,12 +148,19 @@
             todosUl.appendChild(todoLi);
           });
         },
+        removeColorFromEditTodo: function(){
+          var todosUlelement = document.getElementById('ulOfTodos');
+          var lis = todosUl.getElementsByTagName('li');
+          for(var i = 0; i<lis.length; i++){
+            if(parseInt(lis[i].id) === indexInt){
+              var editTodoButtonButtons = lis[i].getElementsByClassName('editTodoButton');
+              var editTodoButton = editTodoButtonButtons[0];
+              editTodoButton.style.backgroundColor = 'white';
+            }
+          }
+        },
         setUpEventListeners: function(){
-          //variables that will listen for events 
-          var addTodoTextInput = document.getElementById('addTodoTextInput');
-          var submitEditTodoTextInput = document.getElementById('submitEditTodoTextInput');
-          var submitEditTodoButton = document.getElementById('submitEditTodoButton');
-          var todosUl = document.querySelector('ul');
+          
 
           //keyup evet listeners
           addTodoTextInput.addEventListener('keyup', function(event){
@@ -152,14 +171,26 @@
           });
 
           submitEditTodoTextInput.addEventListener('keyup', function(event){
+            var elementClicked = event.target;
             if(event.keyCode ===13){
               submitEditTodoButton.click();
             }
           });
 
           //click event listeners
+          addTodoTextInput.addEventListener('click', function(event){
+            var elementClicked = event.target;
+            if(elementClicked.className !== 'editTodoButton' && hiddenDiv.style.display === 'block'){
+              hiddenDiv.style.display = 'none';
+              view.removeColorFromEditTodo();
+            }
+          });
+
           submitEditTodoButton.addEventListener('click', function(){
-            var hiddenDiv = document.getElementById('submitEditTodoDiv');
+            var elementClicked = event.target;
+            if(elementClicked.className !== 'editTodoButton' && hiddenDiv.style.display === 'block'){
+              hiddenDiv.style.display = 'none';
+            }
             var submitEditTextBox = document.getElementById('submitEditTodoTextInput');
             var SubmitEditTextBoxValue = submitEditTextBox.value;
             todoList.changeTodos(indexInt,SubmitEditTextBoxValue);
@@ -169,9 +200,20 @@
             indexInt = undefined;
           });
 
+          toggleAllButton.addEventListener('click',function(event){
+            var elementClicked = event.target;
+            if(elementClicked.className !== 'editTodoButton' && hiddenDiv.style.display === 'block'){
+              hiddenDiv.style.display = 'none';
+            }
+          });
+
           //click event listeners inside of ul
           todosUl.addEventListener('click', function(event){
             var elementClicked = event.target;
+
+            if(elementClicked.className !== 'editTodoButton' && hiddenDiv.style.display === 'block'){
+              hiddenDiv.style.display = 'none';
+            }
             if(elementClicked.className === 'deleteButton'){
               todoList.deleteTodos(parseInt(elementClicked.parentNode.parentNode.id))
             }
@@ -179,7 +221,7 @@
               todoList.toggleCompleted(elementClicked.parentNode.parentNode.id);
             }
             if(elementClicked.className === 'editTodoButton'){
-              var hiddenDiv = document.getElementById('submitEditTodoDiv');
+              
               //if hidden div is already displayed and the same edit button is pressed
               if(hiddenDiv.style.display === 'block' && indexInt === parseInt(elementClicked.parentNode.parentNode.id)){
                 hiddenDiv.style.display = 'none';
@@ -188,19 +230,19 @@
               }
               //if hidden div is already displayed but diffrent edit button is pressed
               else if(hiddenDiv.style.display === 'block'){
-                //lastClickedElement.style.backgroundColor = 'white';
-                var todosUlelement = document.getElementById('ulOfTodos');
-                var lis = todosUl.getElementsByTagName('li');
-                for(var i = 0; i<lis.length; i++){
-                  if(parseInt(lis[i].id) === indexInt){
-                    var editTodoButtonButtons = lis[i].getElementsByClassName('editTodoButton');
-                    var editTodoButton = editTodoButtonButtons[0];
-                    editTodoButton.style.backgroundColor = 'white';
-                  }
-                }
+                view.removeColorFromEditTodo();
+                // var todosUlelement = document.getElementById('ulOfTodos');
+                // var lis = todosUl.getElementsByTagName('li');
+                // for(var i = 0; i<lis.length; i++){
+                //   if(parseInt(lis[i].id) === indexInt){
+                //     var editTodoButtonButtons = lis[i].getElementsByClassName('editTodoButton');
+                //     var editTodoButton = editTodoButtonButtons[0];
+                //     editTodoButton.style.backgroundColor = 'white';
+                //   }
+                // }
                 indexInt = parseInt(elementClicked.parentNode.parentNode.id);
                 elementClicked.style.backgroundColor = '#FDFF47';
-              }
+              }              
               //if the hidden div is not displayed when the edit button is pressed
               else{
                 hiddenDiv.style.display = 'block';

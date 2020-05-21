@@ -4,3 +4,15 @@ li{
     display: flex;
     justify-content: space-between;
 }
+
+button.deleteButton:hover{
+    background-color: red;
+}
+
+button.changeStatusButton:hover{
+    background-color: green;
+}
+
+button.editTodoButton:hover{
+    background-color: yellow;
+}
