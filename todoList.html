@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
   <head>
     <title>Practical JavaScript</title>
@@ -160,8 +159,6 @@
           }
         },
         setUpEventListeners: function(){
-          
-
           //keyup evet listeners
           addTodoTextInput.addEventListener('keyup', function(event){
             if(event.keyCode ===13){
@@ -231,15 +228,6 @@
               //if hidden div is already displayed but diffrent edit button is pressed
               else if(hiddenDiv.style.display === 'block'){
                 view.removeColorFromEditTodo();
-                // var todosUlelement = document.getElementById('ulOfTodos');
-                // var lis = todosUl.getElementsByTagName('li');
-                // for(var i = 0; i<lis.length; i++){
-                //   if(parseInt(lis[i].id) === indexInt){
-                //     var editTodoButtonButtons = lis[i].getElementsByClassName('editTodoButton');
-                //     var editTodoButton = editTodoButtonButtons[0];
-                //     editTodoButton.style.backgroundColor = 'white';
-                //   }
-                // }
                 indexInt = parseInt(elementClicked.parentNode.parentNode.id);
                 elementClicked.style.backgroundColor = '#FDFF47';
               }              
